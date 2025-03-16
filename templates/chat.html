@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Chatbot com Análise de Sentimentos</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #chatbox { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+    .message { margin: 5px 0; }
+    .user { color: blue; }
+    .bot { color: green; }
+  </style>
+</head>
+<body>
+  <h1>Chatbot com Análise de Sentimentos</h1>
+  <div id="chatbox"></div>
+  <input type="text" id="user_input" placeholder="Digite sua mensagem..." style="width: 80%;">
+  <button id="send">Enviar</button>
+
+  <script>
+    $(document).ready(function(){
+      $('#send').click(function(){
+        var message = $('#user_input').val();
+        if(message.trim() === ""){
+          return;
+        }
+        $('#chatbox').append('<div class="message user"><strong>Você:</strong> ' + message + '</div>');
+        $.post('/get_response', {message: message}, function(data){
+          $('#chatbox').append('<div class="message bot"><strong>Chatbot:</strong> ' + data.response + '</div>');
+          $('#user_input').val('');
+          $("#chatbox").scrollTop($("#chatbox")[0].scrollHeight);
+        });
+      });
+      
+      $('#user_input').keypress(function(e) {
+          if (e.which == 13) {
+              $('#send').click();
+          }
+      });
+    });
+  </script>
+</body>
+</html>
